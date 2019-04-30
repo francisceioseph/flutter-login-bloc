@@ -3,8 +3,8 @@ import 'package:rxdart/rxdart.dart';
 import '../mixins/validators.dart';
 
 class Bloc extends Object with ValidationMixin {
-  final _email = StreamController<String>.broadcast();
-  final _password = StreamController<String>.broadcast();
+  final _email = BehaviorSubject<String>();
+  final _password = BehaviorSubject<String>();
 
   Function(String) get changeEmail => _email.sink.add;
   Function(String) get changePassword => _password.sink.add;
@@ -14,7 +14,13 @@ class Bloc extends Object with ValidationMixin {
   Stream<bool> get enableSubmit =>
       Observable.combineLatest2(email, password, (e, p) => true);
 
-  submit() {}
+  submit() {
+    final validEmail = _email.value;
+    final validPassword = _password.value;
+
+    print(validEmail);
+    print(validPassword);
+  }
 
   void dispose() {
     _email.close();
